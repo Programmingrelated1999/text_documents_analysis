@@ -1,0 +1,14 @@
+Phase 1: Data Exploration & Preprocessing
+    Average Post Length, Word Frequency, 
+    Text Cleaning Pipeline: Lowercase text, Remove Special Characters/URLs, Tokenize, Remove Stop Words, Lemmatize 
+
+Task 1: Fake Document Identification
+    Vectorization
+    MLP (Shallow Model)
+    Deep Leaning Model
+    Training & Hyperparameter Tuning
+
+Task 2: Topic Discovery(Unsupervised Learning)
+    LDA (Latent Dirichlet Allocation)
+    TF-IDF + K-Means Clustering
+    Analysis
