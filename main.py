@@ -22,14 +22,17 @@ def get_num_real_and_fake_posts(df):
 def get_unique_headlines(df):
     return df.news_headline.unique()
 
-# Text Cleaning Function
-def clean_text(text_column):
-    return
+# Check Duplicate Records
+def get_duplicate_records(df):
+    return df[df.duplicated()]
 
 # Get Average Post Length
 def get_average_post_len(df):
     post_len_list = df.post.str.len()
     return post_len_list.sum()/len(df.post)
+
+def get_majority_votes(df):
+    return pd.crosstab(df['news_headline_ground_truth'], df['majority_votes'])
 
 # Main Function
 def main():
@@ -41,15 +44,21 @@ def main():
         real_fake_ratio = round(fake_posts_count / real_posts_count, 2)
         unique_headlines = get_unique_headlines(post_df)
         average_post_len = get_average_post_len(post_df)
+        duplicate_posts = get_duplicate_records(post_df)
+        majority_votes = get_majority_votes(post_df)
         print("DATASET ANALYSIS")
         print("===========================================")
         print("Number Of Records: ", shape[0])
+        print("Number Of Duplicate Records: ", len(duplicate_posts))
         print("Incomplete Columns: ", incomplete_columns)
-        print("Real Posts: ", real_posts_count)
-        print("Fake Posts: ", fake_posts_count)
+        print("Number Of Real Posts: ", real_posts_count)
+        print("Number Of Fake Posts: ", fake_posts_count)
         print("Real To Fake Ratio: 1 :", real_fake_ratio)
+        print(f"Share Of Read And Fake Posts: {(real_posts_count/shape[0])*100:.2f}%, {(fake_posts_count/shape[0])*100:.2f}%")
         print("Unique Headlines Count: ", len(unique_headlines))
         print(f"Average Post Length: {average_post_len:.2f}")
+        print("Ground Truth And Majority Votes Breakdown")
+        print(majority_votes)
 
 # Call Main Function
 main()
