@@ -13,7 +13,7 @@ def clean_data(df, column):
 # Tokenize Columns Using Spacy - Ignore Punctuation, Spaces, Currency And Stop
 def tokenize_column(df, column, nlp):
     tokens = []
-    for i, text in enumerate(df[column]):
+    for i, text in enumerate(nlp.pipe(df[column])):
         print("Record: ", i)
         doc = nlp(text)
         tokens.append(
@@ -26,7 +26,7 @@ def tokenize_column(df, column, nlp):
 def main():
     post_df = pd.read_csv("social-media-release.csv")
 
-    post_df['post'] = post_df['post'].fillna('')
+    post_df = post_df.dropna(subset=['post'])
     post_df = clean_data(post_df, 'post')
     nlp = spacy.load('en_core_web_sm')
 
