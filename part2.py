@@ -63,6 +63,20 @@ def plot_bow_topic_and_label_analysis(result):
     plt.show()
     plt.close()
 
+# Analyze Labels From LDA Models With A Targeted Field For Comparison
+def label_analysis(model, train_df, compared_field, vectorizer, posts):
+    compared_df = train_df[compared_field]
+    docs = model.transform(vectorizer.transform(posts))
+    number_of_topics = len(docs[0])
+    column_names = []
+    for i in range(number_of_topics):
+        column_names.append(f'topic_{i}')
+    best_model_df = pd.DataFrame(docs, columns=column_names)
+    best_model_df = best_model_df.join(compared_df)
+    best_model_df_result = best_model_df.groupby(compared_field).mean()
+    plot_bow_topic_and_label_analysis(best_model_df_result)
+    return best_model_df_result
+
 # Train LDA From Corpus Bag Of Words
 def train_lda(corpus_bow):
     models = []
@@ -109,19 +123,13 @@ def main():
     joblib.dump(tfidf_vec, 'lda/tfidf_vectorizer.pkl')
     plot_comparison(bow_lda_perplexities, tfidf_lda_perplexities)
 
-    # Topic With Ground Truth Analysis
+    # Load Best BOW Model
     best_bow_model = joblib.load('lda/best_bow_lda_model.pkl')
     bow_vectorizer = joblib.load('lda/bow_vectorizer.pkl')
-    class_label_df = train_df['class_label']
-    docs = best_bow_model.transform(bow_vectorizer.transform(posts))
-    number_of_topics = len(docs[0])
-    column_names = []
-    for i in range(number_of_topics):
-        column_names.append(f'topic_{i}')
-    best_bow_model_df = pd.DataFrame(docs, columns=column_names)
-    best_bow_model_df = best_bow_model_df.join(class_label_df)
-    best_bow_model_df_result = best_bow_model_df.groupby('class_label').mean()
-    plot_bow_topic_and_label_analysis(best_bow_model_df_result)
+
+    # Topic With Class Label Analysis - BOW
+    label_analysis(best_bow_model, train_df, "class_label", bow_vectorizer, posts)
+    label_analysis(best_bow_model, train_df, "news_headline_ground_truth", bow_vectorizer, posts)
 
 # Main
 if __name__ == "__main__":
